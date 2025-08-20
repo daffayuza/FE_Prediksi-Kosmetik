@@ -59,6 +59,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
     }
   };
 
+  const startIndex = (currentPage - 1) * itemsPerPage;
+
   return (
     <div className="space-y-6">
       {/* Upload & Train Section */}
@@ -167,22 +169,17 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
                   <TableHead>Tayangan Halaman</TableHead>
                   <TableHead>Pesanan</TableHead>
                   <TableHead>Unit Terjual</TableHead>
-                  <TableHead>Aksi</TableHead>
+                  {/* <TableHead>Aksi</TableHead> */}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedData.map((data) => (
+                {paginatedData.map((data, index) => (
                   <TableRow key={data.id}>
-                    <TableCell>{data.id}</TableCell>
+                    <TableCell>{startIndex + index + 1}</TableCell>
                     <TableCell>{data.visitors.toLocaleString()}</TableCell>
                     <TableCell>{data.pageViews.toLocaleString()}</TableCell>
                     <TableCell>{data.orders}</TableCell>
                     <TableCell className="font-semibold">{data.unitsSold}</TableCell>
-                    <TableCell>
-                      <Button variant="outline" size="sm" onClick={() => alert('Fitur hapus belum tersedia')}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

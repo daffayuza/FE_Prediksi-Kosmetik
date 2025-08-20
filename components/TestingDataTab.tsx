@@ -241,7 +241,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
             <CardDescription>Metrik performa model pada data testing</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">{(evaluationMetrics.r2_score * 100).toFixed(1)}%</div>
                 <div className="text-sm text-gray-600 mb-2">R² Score</div>
@@ -254,14 +254,14 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                 <div className="text-xs text-gray-500">Mean Absolute Error</div>
               </div>
 
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              {/* <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">{evaluationMetrics.mse.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">MSE</div>
                 <div className="text-xs text-gray-500">Mean Squared Error</div>
-              </div>
+              </div> */}
 
               <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
+                <div className="text-2xl font-bold text-orange-600">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
                 <div className="text-sm text-gray-600">MAPE</div>
                 <div className="text-xs text-gray-500">Mean Absolute Percentage Error</div>
               </div>
@@ -276,10 +276,10 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Data Testing & Prediksi ({testData.length} data)</span>
-              <Button onClick={loadTestingDataFromBackend} variant="outline" size="sm">
+              {/* <Button onClick={loadTestingDataFromBackend} variant="outline" size="sm">
                 <RefreshCw className="h-4 w-4 mr-2" />
                 Refresh
-              </Button>
+              </Button> */}
             </CardTitle>
             <CardDescription>Perbandingan nilai aktual vs prediksi model</CardDescription>
           </CardHeader>

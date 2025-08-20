@@ -1,29 +1,29 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Calculator, BarChart3 } from "lucide-react"
-import { RegressionModel, PredictionInput } from "@/types"
-import { usePredict } from "@/hooks/usePredict"
+import type React from 'react';
+import { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Calculator, BarChart3 } from 'lucide-react';
+import { RegressionModel, PredictionInput } from '@/types';
+import { usePredict } from '@/hooks/usePredict';
 
 interface PredictionTabProps {
-  model: RegressionModel | null
+  model: RegressionModel | null;
 }
 
 export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
   const [predictionInput, setPredictionInput] = useState<PredictionInput>({
-    visitors: "",
-    pageViews: "",
-    orders: "",
-  })
+    visitors: '',
+    pageViews: '',
+    orders: '',
+  });
 
-  const { hasil, predict } = usePredict()
-  const [loading, setLoading] = useState(false)
+  const { hasil, predict } = usePredict();
+  const [loading, setLoading] = useState(false);
 
   const handlePrediction = async () => {
     // if (!model) {
@@ -31,20 +31,20 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
     //   return
     // }
 
-    const { visitors, pageViews, orders } = predictionInput
+    const { visitors, pageViews, orders } = predictionInput;
     if (!visitors || !pageViews || !orders) {
-      alert("Semua field harus diisi")
-      return
+      alert('Semua field harus diisi');
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     await predict({
       pengunjung: visitors,
       tayangan: pageViews,
       pesanan: orders,
-    })
-    setLoading(false)
-  }
+    });
+    setLoading(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -57,39 +57,21 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <Label htmlFor="pred-visitors">Jumlah Pengunjung</Label>
-              <Input
-                id="pred-visitors"
-                type="number"
-                placeholder="1100"
-                value={predictionInput.visitors}
-                onChange={(e) => setPredictionInput({ ...predictionInput, visitors: e.target.value })}
-              />
+              <Input id="pred-visitors" type="number" placeholder="1100" value={predictionInput.visitors} onChange={(e) => setPredictionInput({ ...predictionInput, visitors: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="pred-pageViews">Tayangan Halaman</Label>
-              <Input
-                id="pred-pageViews"
-                type="number"
-                placeholder="2800"
-                value={predictionInput.pageViews}
-                onChange={(e) => setPredictionInput({ ...predictionInput, pageViews: e.target.value })}
-              />
+              <Input id="pred-pageViews" type="number" placeholder="2800" value={predictionInput.pageViews} onChange={(e) => setPredictionInput({ ...predictionInput, pageViews: e.target.value })} />
             </div>
             <div>
               <Label htmlFor="pred-orders">Jumlah Pesanan</Label>
-              <Input
-                id="pred-orders"
-                type="number"
-                placeholder="55"
-                value={predictionInput.orders}
-                onChange={(e) => setPredictionInput({ ...predictionInput, orders: e.target.value })}
-              />
+              <Input id="pred-orders" type="number" placeholder="55" value={predictionInput.orders} onChange={(e) => setPredictionInput({ ...predictionInput, orders: e.target.value })} />
             </div>
           </div>
 
-          <Button onClick={handlePrediction} className="w-full" disabled={ loading}>
+          <Button onClick={handlePrediction} className="w-full" disabled={loading}>
             <Calculator className="h-4 w-4 mr-2" />
-            {loading ? "Memproses..." : "Buat Prediksi"}
+            {loading ? 'Memproses...' : 'Buat Prediksi'}
           </Button>
 
           {hasil !== null && (
@@ -104,14 +86,14 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
 
           {!model && (
             <Alert>
-              <BarChart3 className="h-4 w-4" />
-              <AlertDescription>
-                Silakan latih model terlebih dahulu di tab "Data Training" untuk membuat prediksi.
-              </AlertDescription>
+              <div className="flex items-center gap-2 pl-2">
+                <BarChart3 className="h-4 w-4" />
+                <AlertDescription>Pastikan Model Sudah Terlatih Sebelum Membuat Prediksi</AlertDescription>
+              </div>
             </Alert>
           )}
         </CardContent>
       </Card>
     </div>
-  )
-}
+  );
+};

@@ -54,7 +54,7 @@ export default function SalesPredictionSystem() {
             Sistem Prediksi Penjualan
           </h1>
           <p className="text-gray-600">
-            Prediksi jumlah unit barang terjual menggunakan Regresi Linear dengan Excel Import
+            Prediksi jumlah unit barang terjual pada Toko Lulu Cosmetic menggunakan Regresi Linear
           </p>
         </div>
 
