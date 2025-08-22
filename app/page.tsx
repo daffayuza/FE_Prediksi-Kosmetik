@@ -46,7 +46,7 @@ export default function SalesPredictionSystem() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4"> 
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-bold text-gray-900 flex items-center justify-center gap-2">
@@ -61,7 +61,7 @@ export default function SalesPredictionSystem() {
         <Tabs defaultValue="training" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="training">Data Training</TabsTrigger>
-            <TabsTrigger value="testing">Data Testing</TabsTrigger>
+            <TabsTrigger value="testing">Evaluasi Model</TabsTrigger>
             <TabsTrigger value="prediction">Prediksi</TabsTrigger>
             {/* <TabsTrigger value="results">Hasil Analisis</TabsTrigger> */}
           </TabsList>

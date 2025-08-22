@@ -73,7 +73,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <div className="flex gap-4 items-start md:items-center">
             <Button onClick={() => trainingFileRef.current?.click()} className="flex-1">
               <Upload className="h-4 w-4 mr-2" />
-              {file ? `File: ${file.name}` : 'Upload File Excel'}
+              {file ? `File: ${file.name}` : 'Upload Data Training'}
             </Button>
             <input ref={trainingFileRef} type="file" accept=".xlsx,.xls" onChange={handleFileChange} className="hidden" />
 

@@ -196,7 +196,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           <div className="flex gap-4">
             <Button onClick={() => testingFileRef.current?.click()} className="flex-1" disabled={isEvaluating}>
               <Upload className="h-4 w-4 mr-2" />
-              {file ? `File: ${file.name}` : 'Upload File Excel Testing'}
+              {file ? `File: ${file.name}` : 'Upload Data Testing'}
             </Button>
 
             <Button onClick={handleEvaluate} disabled={!file || isEvaluating} variant="default" className={`w-full md:w-auto ${file ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}>
