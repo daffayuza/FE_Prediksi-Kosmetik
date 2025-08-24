@@ -13,7 +13,9 @@ export function useModelInfo() {
 
   const fetchModelInfo = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/model-info')
+      const res = await axios.get('http://localhost:5000/model-info', {
+        withCredentials: true
+      });
       setModelInfo(res.data)
     } catch (err) {
       console.error('Gagal memuat model info:', err)

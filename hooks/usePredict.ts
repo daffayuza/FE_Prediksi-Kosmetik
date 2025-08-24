@@ -15,7 +15,9 @@ export function usePredict() {
     formData.append("pesanan", data.pesanan)
 
     try {
-      const res = await axios.post("http://localhost:5000/predict", formData)
+      const res = await axios.post("http://localhost:5000/predict", formData, {
+        withCredentials: true
+      });
       setHasil(res.data.prediksi_terjual)
       return res.data.prediksi_terjual
     } catch (err: any) {

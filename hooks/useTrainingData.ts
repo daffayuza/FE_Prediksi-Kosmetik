@@ -11,7 +11,9 @@ export function useTrainingData() {
     setIsLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:5000/training-data");
+      const res = await axios.get("http://localhost:5000/training-data", {
+        withCredentials: true
+      });
       const mappedData: DataPoint[] = res.data.map((item: any) => ({
         id: item.id,
         visitors: item.pengunjung,
@@ -32,7 +34,9 @@ export function useTrainingData() {
     if (!confirm) return;
   
     try {
-      await axios.delete("http://localhost:5000/train/delete-all");
+      await axios.delete("http://localhost:5000/train/delete-all", {
+        withCredentials: true
+      });
       alert("Semua data latih berhasil dihapus.");
       fetchTrainingData(); // Refresh data di frontend
     } catch (err: any) {

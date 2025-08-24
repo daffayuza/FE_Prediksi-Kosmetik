@@ -52,7 +52,9 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
   const loadTestingDataFromBackend = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/testing-data');
+      const response = await axios.get('http://localhost:5000/testing-data', {
+        withCredentials: true
+      });
       const backendData = response.data;
 
       // Convert backend data format ke format yang digunakan parent
@@ -74,7 +76,9 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
   const loadLatestEvaluation = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/latest-evaluation');
+      const response = await axios.get('http://localhost:5000/latest-evaluation', {
+        withCredentials: true
+      });
       setEvaluationMetrics(response.data.evaluasi);
     } catch (error) {
       // Tidak ada evaluasi atau error lainnya
@@ -115,6 +119,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
       setError('');
 
       const response = await axios.post<EvaluationResponse>('http://localhost:5000/evaluate', formData, {
+        withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
         },

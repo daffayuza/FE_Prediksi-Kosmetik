@@ -49,7 +49,12 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
     const formData = new FormData();
     formData.append('file', file);
     try {
-      await axios.post('http://localhost:5000/train', formData);
+      await axios.post('http://localhost:5000/train', formData, {
+        withCredentials: true, // ✅ bawa session cookie
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       await refetch();
       await refetchModelInfo();
       setFile(null); // ✅ Reset file setelah training
