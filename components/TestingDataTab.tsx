@@ -17,7 +17,6 @@ import { EvaluationChart } from './EvaluationChart';
 interface EvaluationMetrics {
   r2_score: number;
   mae: number;
-  mse: number;
   mape: number;
 }
 
@@ -260,12 +259,6 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                 <div className="text-sm text-gray-600">MAPE</div>
                 <div className="text-xs text-gray-500">(Mean Absolute Percentage Error)</div>
               </div>
-              
-              {/* <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">{evaluationMetrics.mse.toFixed(2)}</div>
-                <div className="text-sm text-gray-600">MSE</div>
-                <div className="text-xs text-gray-500">Mean Squared Error</div>
-              </div> */}
             </div>
           </CardContent>
         </Card>
