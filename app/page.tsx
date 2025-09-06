@@ -6,7 +6,6 @@ import { TrendingUp } from 'lucide-react';
 import { TrainingDataTab } from '@/components/TrainingDataTab';
 import { TestingDataTab } from '@/components/TestingDataTab';
 import { PredictionTab } from '@/components/PredictionTab';
-import { ResultsTab } from '@/components/ResultsTab';
 import { useRegression } from '@/hooks/useRegression';
 import type { DataPoint, TestData, RegressionModel } from '@/types';
 import { useRouter } from 'next/navigation';
@@ -62,23 +61,29 @@ export default function SalesPredictionSystem() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:5000/logout", {}, { withCredentials: true });
-      
-      localStorage.removeItem("isAuthenticated");
+      await axios.post('http://localhost:5000/logout', {}, { withCredentials: true });
 
-      router.push("/login");
-  
-      alert("Logout berhasil");
+      localStorage.removeItem('isAuthenticated');
+
+      router.push('/login');
+
+      alert('Logout berhasil');
     } catch (error: any) {
-      alert("Gagal logout: " + (error.response?.data?.error || error.message));
+      alert('Gagal logout: ' + (error.response?.data?.error || error.message));
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div
+      className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4"
+      style={{
+        background: `linear-gradient(135deg, #7B9CC7 0%, #c7b9d4 50%, #e8ddd4 100%)`,
+      }}
+    >
       <div className="max-w-7xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div className="text-center flex-1 space-y-2">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center justify-between p-6 rounded-xl" style={{ backgroundColor: 'rgba(250, 248, 245, 0.9)', backdropFilter: 'blur(10px)' }}>
+          <div></div>
+          <div className="text-center space-y-2">
             <h1 className="text-4xl font-bold text-gray-900 flex items-center justify-center gap-2">
               <TrendingUp className="h-8 w-8 text-blue-600" />
               Sistem Prediksi Penjualan
@@ -86,34 +91,36 @@ export default function SalesPredictionSystem() {
             <p className="text-gray-600">Prediksi jumlah unit barang terjual pada Toko Lulu Cosmetic menggunakan Regresi Linear</p>
           </div>
 
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative h-12 w-12 rounded-full ml-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src="https://cdna.artstation.com/p/assets/images/images/020/118/278/large/tp-graphics-logo-core-day-1-alison-cosmetics-01.jpg?1566433091" alt="Admin" />
-                  <AvatarFallback className="bg-red-100 text-blue-600">A</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end" forceMount>
-              <DropdownMenuLabel className="font-normal">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none">Admin</p>
-                  <p className="text-xs leading-none text-muted-foreground">Lulu Cosmetic</p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                <LogOut  className="mr-2 h-4 w-4" />
-                <span>Logout</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className='flex justify-end'>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-12 w-12 rounded-full ml-4">
+                  <Avatar className="h-12 w-12 shadown-lg">
+                    {/* <AvatarImage src="https://cdna.artstation.com/p/assets/images/images/020/118/278/large/tp-graphics-logo-core-day-1-alison-cosmetics-01.jpg?1566433091" alt="Admin" /> */}
+                    <AvatarFallback className="bg-[#7B9CC7] text-white font-semibold">A</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">Admin</p>
+                    <p className="text-xs leading-none text-muted-foreground">Lulu Cosmetic</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
 
         <Tabs defaultValue="training" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="training">Data Training</TabsTrigger>
+            <TabsTrigger value="training">Training Model</TabsTrigger>
             <TabsTrigger value="testing">Evaluasi Model</TabsTrigger>
             <TabsTrigger value="prediction">Prediksi</TabsTrigger>
           </TabsList>
@@ -137,10 +144,6 @@ export default function SalesPredictionSystem() {
 
           <TabsContent value="prediction">
             <PredictionTab model={model} />
-          </TabsContent>
-
-          <TabsContent value="results">
-            <ResultsTab model={model} />
           </TabsContent>
         </Tabs>
       </div>

@@ -8,9 +8,10 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Upload, BarChart3, Trash2, RefreshCw, TrendingUp, AlertCircle } from 'lucide-react';
+import { Upload, BarChart3, RefreshCw, TrendingUp, AlertCircle } from 'lucide-react';
 import { usePagination } from '@/hooks/usePagination';
 import { Pagination } from './Pagination';
+import { EvaluationChart } from './EvaluationChart';
 
 // Types untuk evaluasi (sesuaikan dengan backend response)
 interface EvaluationMetrics {
@@ -23,7 +24,7 @@ interface EvaluationMetrics {
 interface EvaluationResponse {
   message: string;
   jumlah_data_test: number;
-    evaluasi: EvaluationMetrics;
+  evaluasi: EvaluationMetrics;
 }
 
 interface TestingDataTabProps {
@@ -53,7 +54,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   const loadTestingDataFromBackend = async () => {
     try {
       const response = await axios.get('http://localhost:5000/testing-data', {
-        withCredentials: true
+        withCredentials: true,
       });
       const backendData = response.data;
 
@@ -77,7 +78,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   const loadLatestEvaluation = async () => {
     try {
       const response = await axios.get('http://localhost:5000/latest-evaluation', {
-        withCredentials: true
+        withCredentials: true,
       });
       setEvaluationMetrics(response.data.evaluasi);
     } catch (error) {
@@ -147,22 +148,6 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
     }
   };
 
-  const clearTestingData = async () => {
-    if (!confirm('Apakah Anda yakin ingin menghapus semua data testing?')) {
-      return;
-    }
-
-    try {
-      await axios.delete('http://localhost:5000/clear-data?type=testing');
-      setTestData([]);
-      setEvaluationResults([]);
-      setEvaluationMetrics(null);
-      // setCurrentPage(1);
-    } catch (error: any) {
-      setError('Gagal menghapus data testing');
-    }
-  };
-
   const getR2ScoreColor = (score: number) => {
     if (score >= 0.8) return 'bg-green-100 text-green-800';
     if (score >= 0.6) return 'bg-yellow-100 text-yellow-800';
@@ -182,7 +167,13 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   return (
     <div className="space-y-6">
       {/* Upload dan Evaluasi */}
-      <Card>
+      <Card
+        className="shadow-lg border-0 backdrop-blur-sm"
+        style={{
+          backgroundColor: 'rgba(250, 248, 245, 0.95)',
+          border: '1px solid rgba(123, 156, 199, 0.2)',
+        }}
+      >
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
@@ -204,7 +195,12 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
               {file ? `File: ${file.name}` : 'Upload Data Testing'}
             </Button>
 
-            <Button onClick={handleEvaluate} disabled={!file || isEvaluating} variant="default" className={`w-full md:w-auto ${file ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}>
+            <Button
+              onClick={handleEvaluate}
+              disabled={!file || isEvaluating}
+              variant="default"
+              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#a5b894] text-white hover:shadow-lg hover:bg-[#8aa471] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+            >
               {isEvaluating ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -217,13 +213,6 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                 </>
               )}
             </Button>
-
-            {/* {testData.length > 0 && (
-              <Button onClick={clearTestingData} variant="outline" size="default" disabled={isEvaluating}>
-                <Trash2 className="h-4 w-4 mr-2" />
-                Hapus Data
-              </Button>
-            )} */}
           </div>
 
           <input ref={testingFileRef} type="file" accept=".xlsx,.xls" onChange={handleFileUpload} className="hidden" />
@@ -240,36 +229,43 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
       {/* Metrics Evaluasi */}
       {evaluationMetrics && (
-        <Card>
+        <Card
+          className="shadow-lg border-0 backdrop-blur-sm"
+          style={{
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
+            border: '1px solid rgba(123, 156, 199, 0.2)',
+          }}
+        >
           <CardHeader>
             <CardTitle>Hasil Evaluasi Model</CardTitle>
             <CardDescription>Metrik performa model pada data testing</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{(evaluationMetrics.r2_score * 100).toFixed(1)}%</div>
-                <div className="text-sm text-gray-600 mb-2">R² Score</div>
-                <Badge className={getR2ScoreColor(evaluationMetrics.r2_score)}>{getR2ScoreLabel(evaluationMetrics.r2_score)}</Badge>
+              <div className="text-center p-4 bg-gray-50 shadow-sm rounded-lg border-2 border-stone-300">
+                <div className="text-2xl font-bold text-blue-600">{evaluationMetrics.r2_score.toFixed(2)}</div>
+                <div className="text-sm text-gray-600">R² Score</div>
+                <div className="text-xs text-gray-500">(Coefficient Of Determination)</div>
+                {/* <Badge className={getR2ScoreColor(evaluationMetrics.r2_score)}>{getR2ScoreLabel(evaluationMetrics.r2_score)}</Badge> */}
               </div>
 
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-center p-4 bg-gray-50 rounded-lg shadow-sm border-2 border-stone-300">
                 <div className="text-2xl font-bold text-green-600">{evaluationMetrics.mae.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">MAE</div>
-                <div className="text-xs text-gray-500">Mean Absolute Error</div>
+                <div className="text-xs text-gray-500">(Mean Absolute Error)</div>
               </div>
 
+              <div className="text-center p-4 bg-gray-50 rounded-lg shadow-sm border-2 border-stone-300">
+                <div className="text-2xl font-bold text-orange-600">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
+                <div className="text-sm text-gray-600">MAPE</div>
+                <div className="text-xs text-gray-500">(Mean Absolute Percentage Error)</div>
+              </div>
+              
               {/* <div className="text-center p-4 bg-gray-50 rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">{evaluationMetrics.mse.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">MSE</div>
                 <div className="text-xs text-gray-500">Mean Squared Error</div>
               </div> */}
-
-              <div className="text-center p-4 bg-gray-50 rounded-lg">
-                <div className="text-2xl font-bold text-orange-600">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
-                <div className="text-sm text-gray-600">MAPE</div>
-                <div className="text-xs text-gray-500">Mean Absolute Percentage Error</div>
-              </div>
             </div>
           </CardContent>
         </Card>
@@ -277,7 +273,13 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
       {/* Data Testing dengan Prediksi */}
       {testData.length > 0 && (
-        <Card>
+        <Card
+          className="shadow-lg border-0 backdrop-blur-sm"
+          style={{
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
+            border: '1px solid rgba(123, 156, 199, 0.2)',
+          }}
+        >
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Data Testing & Prediksi ({testData.length} data)</span>
@@ -292,16 +294,16 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-12">No</TableHead>
-                    <TableHead>Pengunjung</TableHead>
-                    <TableHead>Tayangan</TableHead>
-                    <TableHead>Pesanan</TableHead>
-                    <TableHead className="font-semibold">Aktual</TableHead>
-                    <TableHead className="font-semibold">Prediksi</TableHead>
-                    <TableHead>Error</TableHead>
-                    <TableHead>Error %</TableHead>
-                    <TableHead>Akurasi</TableHead>
+                  <TableRow style={{ backgroundColor: 'rgba(232, 221, 212, 0.3)' }}>
+                    <TableHead className="w-16 text-[#4a4a4a]">No</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Pengunjung</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Tayangan</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Pesanan</TableHead>
+                    <TableHead className="font-semibold text-[#4a4a4a]">Aktual</TableHead>
+                    <TableHead className="font-semibold text-[#4a4a4a]">Prediksi</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Error</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Error %</TableHead>
+                    <TableHead className="text-[#4a4a4a]">Akurasi</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -320,7 +322,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                         <TableCell className="font-semibold text-green-600">{data.predictedUnits?.toFixed(0) || '-'}</TableCell>
                         <TableCell className="text-red-600">{error.toFixed(2)}</TableCell>
                         <TableCell>
-                          <Badge variant={errorPercent <= 10 ? 'default' : errorPercent <= 25 ? 'secondary' : 'destructive'}>{errorPercent.toFixed(1)}%</Badge>
+                          <Badge variant={errorPercent <= 10 ? 'default' : errorPercent <= 25 ? 'secondary' : 'secondary'}>{errorPercent.toFixed(1)}%</Badge>
                         </TableCell>
                         <TableCell>
                           <Badge variant={accuracy >= 90 ? 'default' : accuracy >= 75 ? 'secondary' : 'outline'}>{accuracy.toFixed(1)}%</Badge>
@@ -336,10 +338,25 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           </CardContent>
         </Card>
       )}
+      {testData.length != 0 && (
+        <EvaluationChart
+          data={testData.map((row, idx) => ({
+            index: idx + 1,
+            aktual: row.unitsSold,
+            prediksi: row.predictedUnits,
+          }))}
+        />
+      )}
 
       {/* State kosong */}
       {testData.length === 0 && !isEvaluating && (
-        <Card>
+        <Card
+          className="shadow-lg border-0 backdrop-blur-sm"
+          style={{
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
+            border: '1px solid rgba(123, 156, 199, 0.2)',
+          }}
+        >
           <CardContent className="text-center py-12">
             <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Belum ada data testing</h3>

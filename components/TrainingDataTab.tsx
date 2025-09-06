@@ -69,7 +69,13 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
   return (
     <div className="space-y-6">
       {/* Upload & Train Section */}
-      <Card>
+      <Card
+        className="shadow-lg border-0 backdrop-blur-sm"
+        style={{
+          backgroundColor: 'rgba(250, 248, 245, 0.95)',
+          border: '1px solid rgba(123, 156, 199, 0.2)',
+        }}
+      >
         <CardHeader>
           <CardTitle>Upload Data Training</CardTitle>
           <CardDescription>Gunakan file Excel (.xlsx/.xls) dengan adanya kolom: pengunjung, tayangan, pesanan, terjual</CardDescription>
@@ -87,7 +93,11 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
               {isTraining ? 'Melatih...' : 'Latih Model'}
             </Button> */}
 
-            <Button onClick={handleTrainModel} disabled={!file || isTraining} variant="default" className={`w-full md:w-auto ${file ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}>
+            <Button
+              onClick={handleTrainModel}
+              disabled={!file || isTraining}
+              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#a5b894] text-white hover:shadow-lg hover:bg-[#8aa471] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+            >
               {isTraining ? (
                 <>
                   <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
@@ -103,7 +113,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           </div>
           {file && (
             <div className="p-3 bg-blue-50 rounded-lg border">
-              <p className="text-sm text-blue-700">
+              <p className="text-sm text-blue-600">
                 File siap untuk latih: <strong>{file.name}</strong>
               </p>
             </div>
@@ -113,7 +123,12 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
 
       {/* Model Parameters */}
       {modelInfo && (
-        <Card>
+        <Card
+          style={{
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
+            border: '1px solid rgba(123, 156, 199, 0.2)',
+          }}
+        >
           <CardHeader>
             <CardTitle>Parameter Model</CardTitle>
             <CardDescription>Koefisien dan persamaan regresi dari hasil pelatihan model.</CardDescription>
@@ -124,22 +139,22 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span>Intercept (β₀):</span>
-                  <Badge variant="secondary">{modelInfo.intercept.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#a5b894]">{modelInfo.intercept.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Pengunjung (β₁):</span>
-                  <Badge variant="secondary">{modelInfo.b1.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b1.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Tayangan (β₂):</span>
-                  <Badge variant="secondary">{modelInfo.b2.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b2.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Pesanan (β₃):</span>
-                  <Badge variant="secondary">{modelInfo.b3.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b3.toFixed(4)}</Badge>
                 </div>
               </div>
-              <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="p-4 bg-[#e8ddd4] border border-[#d4c4b0] rounded-lg">
                 <h4 className="font-semibold text-gray-900 mb-2">Persamaan Regresi</h4>
                 <p className="font-mono text-xs bg-white p-3 rounded border">
                   y = {modelInfo.intercept.toFixed(2)} + {modelInfo.b1.toFixed(4)}x₁ + {modelInfo.b2.toFixed(4)}x₂ + {modelInfo.b3.toFixed(4)}x₃
@@ -152,7 +167,13 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
       )}
 
       {/* Data Training Table */}
-      <Card>
+      <Card
+        className="shadow-lg border-0 backdrop-blur-sm"
+        style={{
+          backgroundColor: 'rgba(250, 248, 245, 0.95)',
+          border: '1px solid rgba(123, 156, 199, 0.2)',
+        }}
+      >
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
             <span> Data Training ({trainingData.length} data)</span>
@@ -168,12 +189,12 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>No</TableHead>
-                  <TableHead>Pengunjung</TableHead>
-                  <TableHead>Tayangan Halaman</TableHead>
-                  <TableHead>Pesanan</TableHead>
-                  <TableHead>Unit Terjual</TableHead>
+                <TableRow style={{ backgroundColor: 'rgba(232, 221, 212, 0.3)' }}>
+                  <TableHead style={{ color: '#4a4a4a' }}>No</TableHead>
+                  <TableHead style={{ color: '#4a4a4a' }}>Pengunjung</TableHead>
+                  <TableHead style={{ color: '#4a4a4a' }}>Tayangan Halaman</TableHead>
+                  <TableHead style={{ color: '#4a4a4a' }}>Pesanan</TableHead>
+                  <TableHead style={{ color: '#4a4a4a' }}>Unit Terjual</TableHead>
                   {/* <TableHead>Aksi</TableHead> */}
                 </TableRow>
               </TableHeader>
