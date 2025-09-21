@@ -165,7 +165,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
                   <div className="space-y-2">
                     <Button
                       onClick={applyMultiplier}
-                      className="w-full bg-[#8aa471] text-white hover:shadow-lg hover:bg-[#6b8156] transition-all duration-200"
+                      className="w-full bg-[#00275A] hover:bg-[#011d43] text-white hover:shadow-lg transition-all duration-200"
                       disabled={!predictionInput.visitors || !predictionInput.pageViews || !predictionInput.orders}
                     >
                       <Calculator className="h-4 w-4 mr-2" />
@@ -174,8 +174,8 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
                     
                     <Button 
                       onClick={resetToOriginal} 
-                      variant="outline" 
-                      className="w-full"
+                      variant="default" 
+                      className="w-full bg-[#FE7512] text-white hover:shadow-lg hover:bg-[#F66802] transition-all duration-200"
                       disabled={!originalInput.visitors}
                     >
                       <RotateCcw className="h-4 w-4 mr-2" />
@@ -187,7 +187,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
             )}
           </div>
 
-          <Button onClick={handlePrediction} className="w-full" disabled={loading}>
+          <Button onClick={handlePrediction} className="w-full bg-[#00275A] hover:bg-[#011d43]" disabled={loading} >
             <Calculator className="h-4 w-4 mr-2" />
             {loading ? 'Memproses...' : 'Buat Prediksi'}
           </Button>
@@ -196,7 +196,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
             <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
               <div className="text-center">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Hasil Prediksi</h3>
-                <div className="text-4xl font-bold text-blue-600 mb-2">{hasil} unit</div>
+                <div className="text-4xl font-bold text-[#F66802] mb-2">{hasil} unit</div>
                 <p className="text-gray-600">Prediksi jumlah unit barang yang akan terjual</p>
               </div>
             </div>

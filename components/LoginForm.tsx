@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, LogIn, TrendingUp } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import type { LoginCredentials } from '@/types/auth';
 
 interface LoginFormProps {
@@ -18,6 +19,7 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
   const [credentials, setCredentials] = useState<LoginCredentials>({ username: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,14 +34,14 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
     <div
       className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4"
       style={{
-        background: `linear-gradient(135deg, #7B9CC7 0%, #c7b9d4 50%, #e8ddd4 100%)`,
+        background: `linear-gradient(135deg, #96C5E8 0%, #D8CFB6 50%`,
       }}
     >
       <div className="w-full max-w-md space-y-6 mb-14">
         <div className="text-center space-y-2">
           <div className="flex items-center justify-center gap-2">
-            <TrendingUp className="h-8 w-8 text-blue-600" />
-            <h1 className="text-3xl font-bold text-gray-900">Sistem Prediksi</h1>
+            <TrendingUp className="h-8 w-8 text-[#F66802]" />
+            <h1 className="text-3xl font-bold text-[#00275A]">Sistem Prediksi</h1>
           </div>
           <p className="text-gray-600">Masuk untuk mengakses sistem prediksi penjualan</p>
         </div>
@@ -85,11 +87,18 @@ export function LoginForm({ onLogin, isLoading }: LoginFormProps) {
                 </Alert>
               )}
 
-              <Button type="submit" className="w-full" disabled={isLoading}>
+              <Button type="submit" variant="default" className="w-full bg-[#00275A] hover:bg-[#011d43]" disabled={isLoading}>
                 <LogIn className="h-4 w-4 mr-2" />
                 {isLoading ? 'Sedang Login...' : 'Login'}
               </Button>
             </form>
+
+            <p className="mt-6 text-center text-sm text-gray-600">
+              Belum punya akun?{' '}
+              <span onClick={() => router.push('/register')} className="text-[#F66802] hover:underline cursor-pointer ml-0.5">
+                Daftar di sini
+              </span>
+            </p>
           </CardContent>
         </Card>
       </div>

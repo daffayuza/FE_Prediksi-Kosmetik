@@ -189,7 +189,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           )}
 
           <div className="flex gap-4">
-            <Button onClick={() => testingFileRef.current?.click()} className="flex-1" disabled={isEvaluating}>
+            <Button onClick={() => testingFileRef.current?.click()} className="flex-1 bg-[#00275A] hover:bg-[#011d43]" disabled={isEvaluating}>
               <Upload className="h-4 w-4 mr-2" />
               {file ? `File: ${file.name}` : 'Upload Data Testing'}
             </Button>
@@ -198,7 +198,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
               onClick={handleEvaluate}
               disabled={!file || isEvaluating}
               variant="default"
-              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#a5b894] text-white hover:shadow-lg hover:bg-[#8aa471] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#F66802] text-white hover:shadow-lg hover:bg-[#DA4E00] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
             >
               {isEvaluating ? (
                 <>
@@ -255,7 +255,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
               </div>
 
               <div className="text-center p-4 bg-gray-50 rounded-lg shadow-sm border-2 border-stone-300">
-                <div className="text-2xl font-bold text-orange-600">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
+                <div className="text-2xl font-bold text-[#F66802]">{(evaluationMetrics.mape * 100).toFixed(1)}%</div>
                 <div className="text-sm text-gray-600">MAPE</div>
                 <div className="text-xs text-gray-500">(Mean Absolute Percentage Error)</div>
               </div>
@@ -287,16 +287,16 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow style={{ backgroundColor: 'rgba(232, 221, 212, 0.3)' }}>
-                    <TableHead className="w-16 text-[#4a4a4a]">No</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Pengunjung</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Tayangan</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Pesanan</TableHead>
-                    <TableHead className="font-semibold text-[#4a4a4a]">Aktual</TableHead>
-                    <TableHead className="font-semibold text-[#4a4a4a]">Prediksi</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Error</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Error %</TableHead>
-                    <TableHead className="text-[#4a4a4a]">Akurasi</TableHead>
+                  <TableRow style={{ backgroundColor: '#00275A' }}>
+                    <TableHead className="w-16 text-white">No</TableHead>
+                    <TableHead className="text-white">Pengunjung</TableHead>
+                    <TableHead className="text-white">Tayangan</TableHead>
+                    <TableHead className="text-white">Pesanan</TableHead>
+                    <TableHead className="font-semibold text-white">Aktual</TableHead>
+                    <TableHead className="font-semibold text-white">Prediksi</TableHead>
+                    <TableHead className="text-white">Error</TableHead>
+                    <TableHead className="text-white">Error %</TableHead>
+                    <TableHead className="text-white">Akurasi</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>

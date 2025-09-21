@@ -19,7 +19,7 @@ export default function SalesPredictionSystem() {
   const [model, setModel] = useState<RegressionModel | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
 
-  const { isTraining, trainModel, evaluateModel, makePrediction } = useRegression();
+  const { isTraining, trainModel, evaluateModel } = useRegression();
 
   const router = useRouter();
 
@@ -74,7 +74,7 @@ export default function SalesPredictionSystem() {
     <div
       className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4"
       style={{
-        background: `linear-gradient(135deg, #7B9CC7 0%, #c7b9d4 50%, #e8ddd4 100%)`,
+        background: `linear-gradient(135deg, #96C5E8 0%, #D8CFB6 50%`,
       }}
     >
       <div className="max-w-7xl mx-auto space-y-6 relative">
@@ -82,15 +82,15 @@ export default function SalesPredictionSystem() {
           <div className="grid grid-cols-[1fr_auto_1fr] items-center justify-between p-6 rounded-xl flex-1" style={{ backgroundColor: 'rgba(250, 248, 245, 0.9)', backdropFilter: 'blur(10px)' }}>
             <div></div>
             <div className="text-center space-y-2">
-              <h1 className="text-4xl font-bold text-gray-900 flex items-center justify-center gap-2">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
+              <h1 className="text-4xl font-bold text-[#00275A] flex items-center justify-center gap-2">
+                <TrendingUp className="h-8 w-8 text-[#F66802]"/>
                 Sistem Prediksi Penjualan
               </h1>
               <p className="text-gray-600">Prediksi jumlah unit barang terjual pada Toko Lulu Cosmetic menggunakan Regresi Linear</p>
             </div>
           </div>
 
-          <button className="px-3.5 py-2 bg-red-500 hover:bg-red-600 text-white absolute right-[-9rem] top-2.5 rounded-lg shadow-sm transition-all duration-200 flex items-center gap-2" onClick={handleLogout}>
+          <button className="px-3.5 py-2 bg-[#F66802]  hover:bg-[#DA4E00] text-white absolute right-[-9rem] top-2.5 rounded-lg shadow-sm border-2 border-gray-300 transition-all duration-200 flex items-center gap-2" onClick={handleLogout}>
             <LogOut className="h-4 w-4" />
             Logout
           </button>

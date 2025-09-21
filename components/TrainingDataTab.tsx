@@ -82,7 +82,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex gap-4 items-start md:items-center">
-            <Button onClick={() => trainingFileRef.current?.click()} className="flex-1">
+            <Button onClick={() => trainingFileRef.current?.click()} className="flex-1 bg-[#00275A] hover:bg-[#011d43]">
               <Upload className="h-4 w-4 mr-2" />
               {file ? `File: ${file.name}` : 'Upload Data Training'}
             </Button>
@@ -96,7 +96,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
             <Button
               onClick={handleTrainModel}
               disabled={!file || isTraining}
-              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#a5b894] text-white hover:shadow-lg hover:bg-[#8aa471] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
+              className={`w-full md:w-auto shadow-md ${file ? 'bg-[#F66802] text-white hover:shadow-lg hover:bg-[#DA4E00] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
             >
               {isTraining ? (
                 <>
@@ -128,6 +128,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
             backgroundColor: 'rgba(250, 248, 245, 0.95)',
             border: '1px solid rgba(123, 156, 199, 0.2)',
           }}
+          className="shadow-lg border-0 backdrop-blur-sm"
         >
           <CardHeader>
             <CardTitle>Parameter Model</CardTitle>
@@ -139,27 +140,27 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span>Intercept (β₀):</span>
-                  <Badge className="text-white bg-[#a5b894]">{modelInfo.intercept.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.intercept.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Pengunjung (β₁):</span>
-                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b1.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b1.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Tayangan (β₂):</span>
-                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b2.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b2.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
                   <span>Koef. Pesanan (β₃):</span>
-                  <Badge className="text-white bg-[#a5b894]">{modelInfo.b3.toFixed(4)}</Badge>
+                  <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b3.toFixed(4)}</Badge>
                 </div>
               </div>
-              <div className="p-4 bg-[#e8ddd4] border border-[#d4c4b0] rounded-lg">
-                <h4 className="font-semibold text-gray-900 mb-2">Persamaan Regresi</h4>
-                <p className="font-mono text-xs bg-white p-3 rounded border">
+              <div className="p-4 bg-[#00275A] rounded-lg border-2 border-[#F66802]">
+                <h4 className="font-semibold text-white mb-2">Persamaan Regresi</h4>
+                <p className="font-mono font-semibold text-xs bg-white p-3 rounded-lg text-black border-2 border-[#F66802]">
                   y = {modelInfo.intercept.toFixed(2)} + {modelInfo.b1.toFixed(4)}x₁ + {modelInfo.b2.toFixed(4)}x₂ + {modelInfo.b3.toFixed(4)}x₃
                 </p>
-                <p className="text-xs text-gray-600 mt-2">x₁ = Pengunjung, x₂ = Tayangan, x₃ = Pesanan</p>
+                <p className="text-xs text-white mt-2">x₁ = Pengunjung, x₂ = Tayangan, x₃ = Pesanan</p>
               </div>
             </div>
           </CardContent>
@@ -178,7 +179,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <CardTitle className="flex items-center justify-between">
             <span> Data Training ({trainingData.length} data)</span>
             {trainingData.length > 0 && (
-              <Button onClick={handleDeleteAll} variant="outline" size="sm">
+              <Button onClick={handleDeleteAll} className="bg-[#F66802] shadow-md hover:bg-[#DA4E00] transition-all duration-200 border border-white">
                 <Trash2 className="h-4 w-4 mr-2" />
                 Hapus Semua Data
               </Button>
@@ -189,12 +190,12 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow style={{ backgroundColor: 'rgba(232, 221, 212, 0.3)' }}>
-                  <TableHead style={{ color: '#4a4a4a' }}>No</TableHead>
-                  <TableHead style={{ color: '#4a4a4a' }}>Pengunjung</TableHead>
-                  <TableHead style={{ color: '#4a4a4a' }}>Tayangan Halaman</TableHead>
-                  <TableHead style={{ color: '#4a4a4a' }}>Pesanan</TableHead>
-                  <TableHead style={{ color: '#4a4a4a' }}>Unit Terjual</TableHead>
+                <TableRow style={{ backgroundColor: '#00275A' }}>
+                  <TableHead style={{ color: 'white' }}>No</TableHead>
+                  <TableHead style={{ color: 'white' }}>Pengunjung</TableHead>
+                  <TableHead style={{ color: 'white' }}>Tayangan Halaman</TableHead>
+                  <TableHead style={{ color: 'white' }}>Pesanan</TableHead>
+                  <TableHead style={{ color: 'white' }}>Unit Terjual</TableHead>
                   {/* <TableHead>Aksi</TableHead> */}
                 </TableRow>
               </TableHeader>
