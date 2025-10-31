@@ -6,13 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Upload, BarChart3, Trash2, RefreshCw } from 'lucide-react';
+import { Upload, BarChart3, Trash2, RefreshCw, AlertCircle } from 'lucide-react';
 import { Pagination } from './Pagination';
 import { usePagination } from '@/hooks/usePagination';
 import { useTrainingData } from '@/hooks/useTrainingData';
 import { useModelInfo } from '@/hooks/useModelInfo';
 import type { DataPoint, RegressionModel } from '@/types';
 import axios from 'axios';
+import { Alert, AlertDescription } from './ui/alert';
 
 interface TrainingDataTabProps {
   trainingData: DataPoint[];
@@ -28,6 +29,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
   const { trainingData, refetch, handleDeleteAll } = useTrainingData();
   const { currentPage, paginatedData, onPageChange, totalItems, itemsPerPage } = usePagination(trainingData, 10);
   const { modelInfo, refetchModelInfo } = useModelInfo();
+  const [error, setError] = useState<string>('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
@@ -60,7 +62,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
       setFile(null); // ✅ Reset file setelah training
       alert('Model berhasil dilatih. Data latih diperbarui.');
     } catch (error: any) {
-      alert('Gagal melatih model: ' + (error.response?.data?.error || error.message));
+      const errorMessage = error.response?.data?.error || error.message || 'Terjadi kesalahan saat evaluasi';
+      setError(errorMessage);
     }
   };
 
@@ -81,6 +84,12 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <CardDescription>Gunakan file Excel (.xlsx/.xls) dengan adanya kolom: pengunjung, tayangan, pesanan, terjual</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+        {error && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
           <div className="flex gap-4 items-start md:items-center">
             <Button onClick={() => trainingFileRef.current?.click()} className="flex-1 bg-[#00275A] hover:bg-[#011d43]">
               <Upload className="h-4 w-4 mr-2" />
@@ -147,7 +156,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
                   <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b1.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
-                  <span>Koef. Tayangan (β₂):</span>
+                  <span>Koef. Tayangan Halaman (β₂):</span>
                   <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b2.toFixed(4)}</Badge>
                 </div>
                 <div className="flex justify-between">
@@ -160,7 +169,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
                 <p className="font-mono font-semibold text-xs bg-white p-3 rounded-lg text-black border-2 border-[#F66802]">
                   y = {modelInfo.intercept.toFixed(2)} + {modelInfo.b1.toFixed(4)}x₁ + {modelInfo.b2.toFixed(4)}x₂ + {modelInfo.b3.toFixed(4)}x₃
                 </p>
-                <p className="text-xs text-white mt-2">x₁ = Pengunjung, x₂ = Tayangan, x₃ = Pesanan</p>
+                <p className="text-xs text-white mt-2">x₁ = Pengunjung, x₂ = Tayangan Halaman, x₃ = Pesanan</p>
               </div>
             </div>
           </CardContent>

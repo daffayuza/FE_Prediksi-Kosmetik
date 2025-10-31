@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Calculator, BarChart3, TrendingUp, RotateCcw } from 'lucide-react';
 import { RegressionModel, PredictionInput } from '@/types';
 import { usePredict } from '@/hooks/usePredict';
@@ -120,7 +119,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="pred-pageViews">Tayangan Halaman</Label>
+                  <Label htmlFor="pred-pageViews">Jumlah Tayangan Halaman</Label>
                   <Input 
                     id="pred-pageViews" 
                     type="number" 
@@ -187,7 +186,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
             )}
           </div>
 
-          <Button onClick={handlePrediction} className="w-full bg-[#00275A] hover:bg-[#011d43]" disabled={loading} >
+          <Button onClick={handlePrediction} className="w-full bg-[#00275A] hover:bg-[#011d43]" disabled={loading || !predictionInput.visitors || !predictionInput.pageViews || !predictionInput.orders} >
             <Calculator className="h-4 w-4 mr-2" />
             {loading ? 'Memproses...' : 'Buat Prediksi'}
           </Button>
