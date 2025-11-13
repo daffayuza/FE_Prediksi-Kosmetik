@@ -242,7 +242,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-gray-50 shadow-sm rounded-lg border-2 border-stone-300">
-                <div className="text-2xl font-bold text-blue-600">{evaluationMetrics.r2_score.toFixed(2)}</div>
+                <div className="text-2xl font-bold text-blue-600">{evaluationMetrics.r2_score.toFixed(3)}</div>
                 <div className="text-sm text-gray-600">R² Score</div>
                 <div className="text-xs text-gray-500">(Coefficient Of Determination)</div>
                 {/* <Badge className={getR2ScoreColor(evaluationMetrics.r2_score)}>{getR2ScoreLabel(evaluationMetrics.r2_score)}</Badge> */}
