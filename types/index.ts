@@ -6,6 +6,12 @@ export interface DataPoint {
   unitsSold: number
 }
 
+export interface Product {
+  id: number
+  name: string
+  created_at: string
+}
+
 export interface TestData {
   id: number
   visitors: number

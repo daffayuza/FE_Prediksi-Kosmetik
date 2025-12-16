@@ -7,19 +7,24 @@ import { TrainingDataTab } from '@/components/TrainingDataTab';
 import { TestingDataTab } from '@/components/TestingDataTab';
 import { PredictionTab } from '@/components/PredictionTab';
 import { useRegression } from '@/hooks/useRegression';
-import type { DataPoint, TestData, RegressionModel } from '@/types';
+import type { DataPoint, TestData, RegressionModel, Product } from '@/types';
 import { useRouter } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 import axios from 'axios';
+import { ProductListTab } from '@/components/ProductListTab';
+import ProductSelect from '@/components/ProductSelect';
 
 export default function SalesPredictionSystem() {
   const [trainingData, setTrainingData] = useState<DataPoint[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [testData, setTestData] = useState<TestData[]>([]);
   const [evaluationResults, setEvaluationResults] = useState<TestData[]>([]);
   const [model, setModel] = useState<RegressionModel | null>(null);
   const [isEvaluating, setIsEvaluating] = useState(false);
+  const [isTraining, setIsTraining] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<number | null>(null);
 
-  const { isTraining, trainModel, evaluateModel } = useRegression();
+  const { trainModel, evaluateModel } = useRegression();
 
   const router = useRouter();
 
@@ -83,7 +88,7 @@ export default function SalesPredictionSystem() {
             <div></div>
             <div className="text-center space-y-2">
               <h1 className="text-4xl font-bold text-[#00275A] flex items-center justify-center gap-2">
-                <TrendingUp className="h-8 w-8 text-[#F66802]"/>
+                <TrendingUp className="h-8 w-8 text-[#F66802]" />
                 Sistem Prediksi Penjualan
               </h1>
               <p className="text-gray-600">Prediksi jumlah unit barang terjual pada Toko Lulu Cosmetic menggunakan Regresi Linear</p>
@@ -96,32 +101,47 @@ export default function SalesPredictionSystem() {
           </button>
         </div>
 
-        <Tabs defaultValue="training" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+        <Tabs defaultValue="produk" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="produk">Daftar Produk</TabsTrigger>
             <TabsTrigger value="training">Training Model</TabsTrigger>
             <TabsTrigger value="testing">Evaluasi Model</TabsTrigger>
             <TabsTrigger value="prediction">Prediksi</TabsTrigger>
           </TabsList>
 
+          <TabsContent value="produk">
+            <ProductListTab products={products} setProducts={setProducts} />
+          </TabsContent>
+
           <TabsContent value="training">
-            <TrainingDataTab trainingData={trainingData} setTrainingData={setTrainingData} model={model} isTraining={isTraining} onTrainModel={handleTrainModel} />
+            <div className="space-y-6">
+              <ProductSelect products={products} selectedProductId={selectedProduct} onProductChange={setSelectedProduct} label='Training Model Untuk Produk :'/>
+              <TrainingDataTab selectedProductId={selectedProduct} trainingData={trainingData} setTrainingData={setTrainingData} model={model} isTraining={isTraining} setIsTraining={setIsTraining} onTrainModel={handleTrainModel} />
+            </div>
           </TabsContent>
 
           <TabsContent value="testing">
-            <TestingDataTab
-              testData={testData}
-              setTestData={setTestData}
-              model={model}
-              // setModel={setModel}
-              isEvaluating={isEvaluating}
-              setIsEvaluating={setIsEvaluating}
-              evaluationResults={evaluationResults}
-              setEvaluationResults={setEvaluationResults}
-            />
+            <div className="space-y-6">
+              <ProductSelect products={products} selectedProductId={selectedProduct} onProductChange={setSelectedProduct} label='Evaluasi Model Untuk Produk :' />
+              <TestingDataTab
+                selectedProductId={selectedProduct}
+                testData={testData}
+                setTestData={setTestData}
+                model={model}
+                // setModel={setModel}
+                isEvaluating={isEvaluating}
+                setIsEvaluating={setIsEvaluating}
+                evaluationResults={evaluationResults}
+                setEvaluationResults={setEvaluationResults}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="prediction">
-            <PredictionTab model={model} />
+            <div className='space-y-6'>
+              <ProductSelect products={products} selectedProductId={selectedProduct} onProductChange={setSelectedProduct} label='Prediksi Untuk Produk :' />
+              <PredictionTab products={products} selectedProductId={selectedProduct} model={model} />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

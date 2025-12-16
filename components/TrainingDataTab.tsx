@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Upload, BarChart3, Trash2, RefreshCw, AlertCircle } from 'lucide-react';
+import { Upload, BarChart3, Trash2, RefreshCw, AlertCircle, TrendingUp } from 'lucide-react';
 import { Pagination } from './Pagination';
 import { usePagination } from '@/hooks/usePagination';
 import { useTrainingData } from '@/hooks/useTrainingData';
@@ -20,15 +20,17 @@ interface TrainingDataTabProps {
   setTrainingData: (data: DataPoint[]) => void;
   model: RegressionModel | null;
   isTraining: boolean;
+  setIsTraining: (val: boolean) => void;
   onTrainModel: () => Promise<void>;
+  selectedProductId: number | null;
 }
 
-export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) => {
+export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, setIsTraining, selectedProductId }) => {
   const trainingFileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
-  const { trainingData, refetch, handleDeleteAll } = useTrainingData();
+  const { trainingData, refetch, handleDeleteAll } = useTrainingData(selectedProductId);
   const { currentPage, paginatedData, onPageChange, totalItems, itemsPerPage } = usePagination(trainingData, 10);
-  const { modelInfo, refetchModelInfo } = useModelInfo();
+  const { modelInfo, refetchModelInfo } = useModelInfo(selectedProductId);
   const [error, setError] = useState<string>('');
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,6 +41,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
         setFile(selectedFile);
       } else {
         alert('Silakan pilih file Excel (.xlsx atau .xls)');
+        setFile(null);
       }
     }
   };
@@ -48,15 +51,25 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
       alert('Silakan pilih file Excel terlebih dahulu');
       return;
     }
+
+    if (selectedProductId === null) {
+      alert('Silakan pilih Produk terlebih dahulu.');
+      return;
+    }
+
+    const productId = selectedProductId.toString();
+
     const formData = new FormData();
     formData.append('file', file);
     try {
-      await axios.post('http://localhost:5000/train', formData, {
+      setIsTraining(true);
+      await axios.post(`http://localhost:5000/train/${productId}`, formData, {
         withCredentials: true, // ✅ bawa session cookie
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       await refetch();
       await refetchModelInfo();
       setFile(null); // ✅ Reset file setelah training
@@ -64,6 +77,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
     } catch (error: any) {
       const errorMessage = error.response?.data?.error || error.message || 'Terjadi kesalahan saat evaluasi';
       setError(errorMessage);
+    } finally {
+      setIsTraining(false);
     }
   };
 
@@ -84,27 +99,23 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
           <CardDescription>Gunakan file Excel (.xlsx/.xls) dengan adanya kolom: pengunjung, tayangan, pesanan, terjual</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-        {error && (
+          {error && (
             <Alert variant="destructive">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-          <div className="flex gap-4 items-start md:items-center">
-            <Button onClick={() => trainingFileRef.current?.click()} className="flex-1 bg-[#00275A] hover:bg-[#011d43]">
+
+          <div className="flex gap-4">
+            <Button onClick={() => trainingFileRef.current?.click()} className="flex-1 bg-[#00275A] hover:bg-[#011d43]" disabled={isTraining}>
               <Upload className="h-4 w-4 mr-2" />
               {file ? `File: ${file.name}` : 'Upload Data Training'}
             </Button>
-            <input ref={trainingFileRef} type="file" accept=".xlsx,.xls" onChange={handleFileChange} className="hidden" />
-
-            {/* <Button onClick={handleTrainModel} disabled={!file || isTraining} className={`w-full md:w-auto ${file ? 'bg-green-500 text-white hover:bg-green-600' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}>
-              <BarChart3 className="h-5 w-5 mr-2" />
-              {isTraining ? 'Melatih...' : 'Latih Model'}
-            </Button> */}
 
             <Button
               onClick={handleTrainModel}
               disabled={!file || isTraining}
+              variant="default"
               className={`w-full md:w-auto shadow-md ${file ? 'bg-[#F66802] text-white hover:shadow-lg hover:bg-[#DA4E00] transition-all duration-200' : 'bg-gray-300 text-gray-600 cursor-not-allowed'}`}
             >
               {isTraining ? (
@@ -120,10 +131,13 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
               )}
             </Button>
           </div>
+
+          <input ref={trainingFileRef} type="file" accept=".xlsx,.xls" onChange={handleFileChange} className="hidden" />
+
           {file && (
             <div className="p-3 bg-blue-50 rounded-lg border">
-              <p className="text-sm text-blue-600">
-                File siap untuk latih: <strong>{file.name}</strong>
+              <p className="text-sm text-blue-700">
+                File siap untuk dilatih: <strong>{file.name}</strong>
               </p>
             </div>
           )}
@@ -131,7 +145,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
       </Card>
 
       {/* Model Parameters */}
-      {modelInfo && (
+      {modelInfo ? (
         <Card
           style={{
             backgroundColor: 'rgba(250, 248, 245, 0.95)',
@@ -144,6 +158,7 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
             <CardDescription>Koefisien dan persamaan regresi dari hasil pelatihan model.</CardDescription>
             <CardDescription>Terakhir diperbarui: {modelInfo.updated_at}</CardDescription>
           </CardHeader>
+
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-3">
@@ -164,15 +179,33 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining }) 
                   <Badge className="text-white bg-[#00275A] border-2 border-[#F66802]">{modelInfo.b3.toFixed(4)}</Badge>
                 </div>
               </div>
+
               <div className="p-4 bg-[#00275A] rounded-lg border-2 border-[#F66802]">
                 <h4 className="font-semibold text-white mb-2">Persamaan Regresi</h4>
                 <p className="font-mono font-semibold text-xs bg-white p-3 rounded-lg text-black border-2 border-[#F66802]">
-                  y = {modelInfo.intercept.toFixed(2)} + {modelInfo.b1.toFixed(4)}x₁ + {modelInfo.b2.toFixed(4)}x₂ + {modelInfo.b3.toFixed(4)}x₃
+                  y = {modelInfo.intercept.toFixed(2)} + {modelInfo.b1.toFixed(4)}x₁ +{modelInfo.b2.toFixed(4)}x₂ + {modelInfo.b3.toFixed(4)}x₃
                 </p>
                 <p className="text-xs text-white mt-2">x₁ = Pengunjung, x₂ = Tayangan Halaman, x₃ = Pesanan</p>
               </div>
             </div>
           </CardContent>
+        </Card>
+      ) : (
+        <Card
+          style={{
+            backgroundColor: 'rgba(250, 248, 245, 0.95)',
+            border: '1px solid rgba(123, 156, 199, 0.2)',
+          }}
+          className="shadow-lg border-0 backdrop-blur-sm flex items-center justify-center py-10"
+        >
+          <div className="text-center space-y-3">
+            <h3 className="text-lg font-semibold text-gray-700">Model Belum Tersedia Pada Produk ini</h3>
+            <p className="text-gray-500 max-w-sm mx-auto">Silakan unggah data latih untuk melakukan pelatihan model terlebih dahulu.</p>
+
+            {/* <div className="flex justify-center">
+              <span className="px-4 py-2 rounded-lg bg-[#00275A] border-2 border-[#F66802] text-white font-medium text-xs">Belum Ada Model</span>
+            </div> */}
+          </div>
         </Card>
       )}
 

@@ -35,9 +35,10 @@ interface TestingDataTabProps {
   setIsEvaluating: (val: boolean) => void;
   evaluationResults: any[];
   setEvaluationResults: (data: any[]) => void;
+  selectedProductId: number | null;
 }
 
-export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTestData, model, setModel, isEvaluating, setIsEvaluating, evaluationResults, setEvaluationResults }) => {
+export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTestData, model, setModel, isEvaluating, setIsEvaluating, evaluationResults, setEvaluationResults, selectedProductId }) => {
   const testingFileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [evaluationMetrics, setEvaluationMetrics] = useState<EvaluationMetrics | null>(null);
@@ -48,11 +49,11 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   useEffect(() => {
     loadTestingDataFromBackend();
     loadLatestEvaluation();
-  }, []);
+  }, [selectedProductId]);
 
   const loadTestingDataFromBackend = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/testing-data', {
+      const response = await axios.get(`http://localhost:5000/testing-data/${selectedProductId}`, {
         withCredentials: true,
       });
       const backendData = response.data;
@@ -75,14 +76,20 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   };
 
   const loadLatestEvaluation = async () => {
+    if (!selectedProductId) {
+      setEvaluationMetrics(null);
+      return;
+    }
+
     try {
-      const response = await axios.get('http://localhost:5000/latest-evaluation', {
+      const response = await axios.get(`http://localhost:5000/latest-evaluation?product_id=${selectedProductId}`, {
         withCredentials: true,
       });
       setEvaluationMetrics(response.data.evaluasi);
     } catch (error) {
+      setEvaluationMetrics(null);
       // Tidak ada evaluasi atau error lainnya
-      console.log('No evaluation available');
+      console.error('No evaluation available');
     }
   };
 
@@ -106,6 +113,11 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
       return;
     }
 
+    if (!selectedProductId) {
+      setError('Silakan pilih produk terlebih dahulu');
+      return;
+    }
+
     // if (!model) {
     //   setError('Model belum tersedia. Lakukan training terlebih dahulu.');
     //   return;
@@ -113,12 +125,13 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('product_id', selectedProductId.toString());
 
     try {
       setIsEvaluating(true);
       setError('');
 
-      const response = await axios.post<EvaluationResponse>('http://localhost:5000/evaluate', formData, {
+      const response = await axios.post<EvaluationResponse>(`http://localhost:5000/evaluate`, formData, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -353,11 +366,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
           <CardContent className="text-center py-12">
             <BarChart3 className="h-12 w-12 mx-auto text-gray-400 mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">Belum ada data testing</h3>
-            <p className="text-gray-500 mb-6">Upload file Excel untuk melakukan evaluasi model</p>
-            <Button onClick={() => testingFileRef.current?.click()}>
-              <Upload className="h-4 w-4 mr-2" />
-              Upload File Excel
-            </Button>
+            <p className="text-gray-500 mb-6">Upload file Excel untuk melakukan Evaluasi Model</p>
           </CardContent>
         </Card>
       )}

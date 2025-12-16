@@ -7,14 +7,16 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Calculator, BarChart3, TrendingUp, RotateCcw } from 'lucide-react';
-import { RegressionModel, PredictionInput } from '@/types';
+import { RegressionModel, PredictionInput, Product } from '@/types';
 import { usePredict } from '@/hooks/usePredict';
 
 interface PredictionTabProps {
   model: RegressionModel | null;
+  products: Product[];
+  selectedProductId: number | null;
 }
 
-export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
+export const PredictionTab: React.FC<PredictionTabProps> = ({ model, products, selectedProductId }) => {
   const [predictionInput, setPredictionInput] = useState<PredictionInput>({
     visitors: '',
     pageViews: '',
@@ -29,7 +31,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
   });
   const [showTrafficMultiplier, setShowTrafficMultiplier] = useState(false);
 
-  const { hasil, predict } = usePredict();
+  const { hasil, predict } = usePredict(selectedProductId);
   const [loading, setLoading] = useState(false);
 
   // Function to apply multiplier
@@ -78,6 +80,8 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
     setLoading(false);
   };
 
+  const selectedProduct = products.find(p => p.id === selectedProductId);
+
   return (
     <div className="space-y-6">
       <Card className="shadow-lg border-0 backdrop-blur-sm"
@@ -90,6 +94,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
           <CardDescription>Masukkan data untuk memprediksi jumlah unit barang yang akan terjual</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          
           {/* Main Content - Side by Side Layout */}
           <div className={`grid ${showTrafficMultiplier ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6`}>
             
@@ -193,10 +198,11 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ model }) => {
 
           {hasil !== null && (
             <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Hasil Prediksi</h3>
                 <div className="text-4xl font-bold text-[#F66802] mb-2">{hasil} unit</div>
-                <p className="text-gray-600">Prediksi jumlah unit barang yang akan terjual</p>
+                <p className="text-gray-600">Yang akan terjual untuk produk:</p>
+                <p className="font-medium text-lg">{selectedProduct?.name}</p>
               </div>
             </div>
           )}

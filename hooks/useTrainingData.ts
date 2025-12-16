@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import type { DataPoint } from "@/types";
 
-export function useTrainingData() {
+export function useTrainingData(productId: number | null) {
   const [trainingData, setTrainingData] = useState<DataPoint[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const fetchTrainingData = async () => {
+    if (!productId) return;
+    
     setIsLoading(true);
     setError(null);
     try {
-      const res = await axios.get("http://localhost:5000/training-data", {
+      const res = await axios.get(`http://localhost:5000/training-data?product_id=${productId}`, {
         withCredentials: true
       });
       const mappedData: DataPoint[] = res.data.map((item: any) => ({
@@ -34,7 +36,7 @@ export function useTrainingData() {
     if (!confirm) return;
   
     try {
-      await axios.delete("http://localhost:5000/train/delete-all", {
+      await axios.delete(`http://localhost:5000/train/delete-by-product/${productId}`, {
         withCredentials: true
       });
       alert("Semua data latih berhasil dihapus.");
@@ -46,7 +48,7 @@ export function useTrainingData() {
 
   useEffect(() => {
     fetchTrainingData();
-  }, []);
+  }, [productId]);
 
   return { trainingData, setTrainingData, isLoading, error, refetch: fetchTrainingData, handleDeleteAll };
 }
