@@ -84,6 +84,14 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, se
 
   const startIndex = (currentPage - 1) * itemsPerPage;
 
+  const namaBulan = [
+    "Januari", "Februari", "Maret", "April",
+    "Mei", "Juni", "Juli", "Agustus",
+    "September", "Oktober", "November", "Desember"
+  ]
+  
+  const tampilkanBulan = (bulan: number) => namaBulan[bulan - 1]
+  
   return (
     <div className="space-y-6">
       {/* Upload & Train Section */}
@@ -234,6 +242,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, se
               <TableHeader>
                 <TableRow style={{ backgroundColor: '#00275A' }}>
                   <TableHead style={{ color: 'white' }}>No</TableHead>
+                  <TableHead style={{ color: 'white' }}>Tahun</TableHead>
+                  <TableHead style={{ color: 'white' }}>Bulan</TableHead>
                   <TableHead style={{ color: 'white' }}>Pengunjung</TableHead>
                   <TableHead style={{ color: 'white' }}>Tayangan Halaman</TableHead>
                   <TableHead style={{ color: 'white' }}>Pesanan</TableHead>
@@ -245,6 +255,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, se
                 {paginatedData.map((data, index) => (
                   <TableRow key={data.id}>
                     <TableCell>{startIndex + index + 1}</TableCell>
+                    <TableCell>{data.year}</TableCell>
+                    <TableCell>{tampilkanBulan(data.month)}</TableCell>
                     <TableCell>{data.visitors.toLocaleString()}</TableCell>
                     <TableCell>{data.pageViews.toLocaleString()}</TableCell>
                     <TableCell>{data.orders}</TableCell>

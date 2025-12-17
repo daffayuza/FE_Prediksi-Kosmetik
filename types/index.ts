@@ -1,5 +1,7 @@
 export interface DataPoint {
   id: number
+  year: number
+  month: number
   visitors: number
   pageViews: number
   orders: number

@@ -61,6 +61,8 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
       // Convert backend data format ke format yang digunakan parent
       const convertedData = backendData.map((item: any) => ({
         id: item.id,
+        year: item.tahun,
+        month: item.bulan,
         visitors: item.pengunjung,
         pageViews: item.tayangan,
         orders: item.pesanan,
@@ -175,6 +177,14 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
 
   // Pagination logic
   const startIndex = (currentPage - 1) * itemsPerPage;
+
+  const namaBulan = [
+    "Januari", "Februari", "Maret", "April",
+    "Mei", "Juni", "Juli", "Agustus",
+    "September", "Oktober", "November", "Desember"
+  ]
+  
+  const tampilkanBulan = (bulan: number) => namaBulan[bulan - 1]
 
   return (
     <div className="space-y-6">
@@ -302,13 +312,15 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                 <TableHeader>
                   <TableRow style={{ backgroundColor: '#00275A' }}>
                     <TableHead className="w-16 text-white">No</TableHead>
+                    <TableHead className="text-white">Tahun</TableHead>
+                    <TableHead className="text-white">Bulan</TableHead>
                     <TableHead className="text-white">Pengunjung</TableHead>
                     <TableHead className="text-white">Tayangan</TableHead>
                     <TableHead className="text-white">Pesanan</TableHead>
                     <TableHead className="font-semibold text-white">Aktual</TableHead>
                     <TableHead className="font-semibold text-white">Prediksi</TableHead>
-                    <TableHead className="text-white">Error</TableHead>
-                    <TableHead className="text-white">Error %</TableHead>
+                    {/* <TableHead className="text-white">Error</TableHead>
+                    <TableHead className="text-white">Error %</TableHead> */}
                     <TableHead className="text-white">Akurasi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -321,15 +333,17 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                     return (
                       <TableRow key={data.id}>
                         <TableCell>{startIndex + index + 1}</TableCell>
+                        <TableCell>{data.year}</TableCell>
+                        <TableCell>{tampilkanBulan(data.month)}</TableCell>
                         <TableCell>{data.visitors?.toLocaleString()}</TableCell>
                         <TableCell>{data.pageViews?.toLocaleString()}</TableCell>
                         <TableCell>{data.orders?.toLocaleString()}</TableCell>
                         <TableCell className="font-semibold text-blue-600">{data.unitsSold?.toLocaleString()}</TableCell>
                         <TableCell className="font-semibold text-green-600">{data.predictedUnits?.toFixed(0) || '-'}</TableCell>
-                        <TableCell className="text-red-600">{error.toFixed(2)}</TableCell>
+                        {/* <TableCell className="text-red-600">{error.toFixed(2)}</TableCell>
                         <TableCell>
                           <Badge variant={errorPercent <= 10 ? 'default' : errorPercent <= 25 ? 'secondary' : 'secondary'}>{errorPercent.toFixed(1)}%</Badge>
-                        </TableCell>
+                        </TableCell> */}
                         <TableCell>
                           <Badge variant={accuracy >= 90 ? 'default' : accuracy >= 75 ? 'secondary' : 'outline'}>{accuracy.toFixed(1)}%</Badge>
                         </TableCell>

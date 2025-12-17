@@ -18,6 +18,8 @@ export function useTrainingData(productId: number | null) {
       });
       const mappedData: DataPoint[] = res.data.map((item: any) => ({
         id: item.id,
+        year: item.tahun,
+        month: item.bulan,
         visitors: item.pengunjung,
         pageViews: item.tayangan,
         orders: item.pesanan,
