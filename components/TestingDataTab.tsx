@@ -12,6 +12,7 @@ import { Upload, BarChart3, RefreshCw, TrendingUp, AlertCircle } from 'lucide-re
 import { usePagination } from '@/hooks/usePagination';
 import { Pagination } from './Pagination';
 import { EvaluationChart } from './EvaluationChart';
+import { tampilkanBulan } from '@/utils/bulanOptions';
 
 // Types untuk evaluasi (sesuaikan dengan backend response)
 interface EvaluationMetrics {
@@ -178,14 +179,6 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
   // Pagination logic
   const startIndex = (currentPage - 1) * itemsPerPage;
 
-  const namaBulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-  ]
-  
-  const tampilkanBulan = (bulan: number) => namaBulan[bulan - 1]
-
   return (
     <div className="space-y-6">
       {/* Upload dan Evaluasi */}
@@ -315,7 +308,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                     <TableHead className="text-white">Tahun</TableHead>
                     <TableHead className="text-white">Bulan</TableHead>
                     <TableHead className="text-white">Pengunjung</TableHead>
-                    <TableHead className="text-white">Tayangan</TableHead>
+                    <TableHead className="text-white">Tayangan Halaman</TableHead>
                     <TableHead className="text-white">Pesanan</TableHead>
                     <TableHead className="font-semibold text-white">Aktual</TableHead>
                     <TableHead className="font-semibold text-white">Prediksi</TableHead>
@@ -335,10 +328,10 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                         <TableCell>{startIndex + index + 1}</TableCell>
                         <TableCell>{data.year}</TableCell>
                         <TableCell>{tampilkanBulan(data.month)}</TableCell>
-                        <TableCell>{data.visitors?.toLocaleString()}</TableCell>
-                        <TableCell>{data.pageViews?.toLocaleString()}</TableCell>
-                        <TableCell>{data.orders?.toLocaleString()}</TableCell>
-                        <TableCell className="font-semibold text-blue-600">{data.unitsSold?.toLocaleString()}</TableCell>
+                        <TableCell>{data.visitors}</TableCell>
+                        <TableCell>{data.pageViews}</TableCell>
+                        <TableCell>{data.orders}</TableCell>
+                        <TableCell className="font-semibold text-blue-600">{data.unitsSold}</TableCell>
                         <TableCell className="font-semibold text-green-600">{data.predictedUnits?.toFixed(0) || '-'}</TableCell>
                         {/* <TableCell className="text-red-600">{error.toFixed(2)}</TableCell>
                         <TableCell>

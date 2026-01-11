@@ -34,6 +34,8 @@ export interface RegressionModel {
 }
 
 export interface PredictionInput {
+  tahun: string;
+  bulan: string;
   visitors: string
   pageViews: string
   orders: string

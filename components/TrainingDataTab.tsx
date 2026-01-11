@@ -14,6 +14,7 @@ import { useModelInfo } from '@/hooks/useModelInfo';
 import type { DataPoint, RegressionModel } from '@/types';
 import axios from 'axios';
 import { Alert, AlertDescription } from './ui/alert';
+import { tampilkanBulan } from '@/utils/bulanOptions';
 
 interface TrainingDataTabProps {
   trainingData: DataPoint[];
@@ -83,14 +84,6 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, se
   };
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-
-  const namaBulan = [
-    "Januari", "Februari", "Maret", "April",
-    "Mei", "Juni", "Juli", "Agustus",
-    "September", "Oktober", "November", "Desember"
-  ]
-  
-  const tampilkanBulan = (bulan: number) => namaBulan[bulan - 1]
   
   return (
     <div className="space-y-6">
@@ -257,8 +250,8 @@ export const TrainingDataTab: React.FC<TrainingDataTabProps> = ({ isTraining, se
                     <TableCell>{startIndex + index + 1}</TableCell>
                     <TableCell>{data.year}</TableCell>
                     <TableCell>{tampilkanBulan(data.month)}</TableCell>
-                    <TableCell>{data.visitors.toLocaleString()}</TableCell>
-                    <TableCell>{data.pageViews.toLocaleString()}</TableCell>
+                    <TableCell>{data.visitors}</TableCell>
+                    <TableCell>{data.pageViews}</TableCell>
                     <TableCell>{data.orders}</TableCell>
                     <TableCell className="font-semibold">{data.unitsSold}</TableCell>
                   </TableRow>
