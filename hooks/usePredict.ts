@@ -109,6 +109,19 @@ export function usePredict(productId: number | null) {
     }
   };
 
+  const fetchLastHistoricalData = async () => {
+    if (!productId) {
+      throw new Error('Produk belum dipilih');
+    }
+
+    const res = await axios.get(
+      `http://localhost:5000/training-data/last/${productId}`,
+      { withCredentials: true }
+    );
+
+    return res.data.data; // { pengunjung, tayangan, pesanan }
+  }; 
+
   /* =======================
      AUTO FETCH SAAT PRODUK BERUBAH
      ======================= */
@@ -122,6 +135,7 @@ export function usePredict(productId: number | null) {
     loading,
     predict,
     refreshHistory: fetchHistory,
-    deleteAllHistory
+    deleteAllHistory,
+    fetchLastHistoricalData
   };
 }

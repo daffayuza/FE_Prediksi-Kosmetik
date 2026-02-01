@@ -33,7 +33,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
   const [showTrafficMultiplier, setShowTrafficMultiplier] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { hasil, history, predict, deleteAllHistory } = usePredict(selectedProductId);
+  const { hasil, history, predict, deleteAllHistory, fetchLastHistoricalData } = usePredict(selectedProductId);
 
   const selectedProduct = products.find((p) => p.id === selectedProductId);
 
@@ -83,6 +83,21 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
     setLoading(false);
   };
 
+  const handleApplyLastHistorical = async () => {
+    try {
+      const data = await fetchLastHistoricalData();
+
+      setPredictionInput((prev) => ({
+        ...prev,
+        visitors: data.pengunjung.toString(),
+        pageViews: data.tayangan.toString(),
+        orders: data.pesanan.toString(),
+      }));
+    } catch (err: any) {
+      alert(err.message || 'Gagal mengambil data historis');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <Card
@@ -102,7 +117,11 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
             {/* Left Side - Input Variables */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">Data Input</h3>
+                {/* <h3 className="text-lg font-semibold text-gray-900">Data Input</h3> */}
+                <Button variant="outline" size="sm" onClick={handleApplyLastHistorical}>
+                  Terapkan Data Latih Terakhir
+                </Button>
+
                 <Button variant="outline" size="sm" onClick={() => setShowTrafficMultiplier(!showTrafficMultiplier)}>
                   <TrendingUp className="h-4 w-4 mr-2 " />
                   {showTrafficMultiplier ? 'Sembunyikan' : 'Simulasi Peningkatan Traffic'}
@@ -110,10 +129,6 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label>Tahun</Label>
-                  <Input type="number" placeholder="contoh: 2025" value={predictionInput.tahun} onChange={(e) => setPredictionInput({ ...predictionInput, tahun: e.target.value })} />
-                </div>
                 <div>
                   <Label>Bulan</Label>
                   <Select value={predictionInput.bulan} onValueChange={(value) => setPredictionInput({ ...predictionInput, bulan: value })}>
@@ -128,6 +143,10 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+                <div>
+                  <Label>Tahun</Label>
+                  <Input type="number" placeholder="contoh: 2025" value={predictionInput.tahun} onChange={(e) => setPredictionInput({ ...predictionInput, tahun: e.target.value })} />
                 </div>
               </div>
 
@@ -184,7 +203,11 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
             )}
           </div>
 
-          <Button onClick={handlePrediction} className="w-full bg-[#00275A] hover:bg-[#011d43]" disabled={loading || !predictionInput.visitors || !predictionInput.pageViews || !predictionInput.orders}>
+          <Button
+            onClick={handlePrediction}
+            className="w-full bg-[#00275A] hover:bg-[#011d43]"
+            disabled={loading || !predictionInput.visitors || !predictionInput.pageViews || !predictionInput.orders || !predictionInput.tahun || !predictionInput.bulan}
+          >
             <Calculator className="h-4 w-4 mr-2" />
             {loading ? 'Memproses...' : 'Buat Prediksi'}
           </Button>
@@ -192,7 +215,9 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
           {hasil !== null && (
             <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border">
               <div className="text-center space-y-2">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Hasil Prediksi - {BULAN_LABEL[hasil.bulan]} {hasil.tahun}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Hasil Prediksi - {BULAN_LABEL[hasil.bulan]} {hasil.tahun}
+                </h3>
                 <div className="text-4xl font-bold text-[#F66802] mb-2">{hasil.hasil} unit</div>
                 <p className="text-gray-600">untuk produk:</p>
                 <p className="font-medium text-lg">{selectedProduct?.name}</p>
@@ -211,7 +236,10 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
       >
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            <span> Riwayat Hasil Prediksi Produk <span className='text-[#F66802] italic'>{selectedProduct?.name} </span> <span className='text-base'>({history.length} data)</span></span>
+            <span>
+              {' '}
+              Riwayat Hasil Prediksi Produk <span className="text-[#F66802] italic">{selectedProduct?.name} </span> <span className="text-base">({history.length} data)</span>
+            </span>
             {history.length > 0 && (
               <Button onClick={deleteAllHistory} className="bg-[#F66802] shadow-md hover:bg-[#DA4E00] transition-all duration-200 border border-white">
                 <Trash2 className="h-4 w-4 mr-2" />
