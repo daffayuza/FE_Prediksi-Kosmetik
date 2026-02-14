@@ -18,6 +18,7 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
   const [isLoading, setIsLoading] = useState(true);
 
   const [formData, setFormData] = useState({
+    kode: '',
     name: '',
   });
 
@@ -43,11 +44,12 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
     if (!formData.name.trim()) return alert('Nama produk wajib diisi');
 
     try {
-      const res = await axios.post('http://localhost:5000/products', {
+      await axios.post('http://localhost:5000/products', {
+        kode: formData.kode,
         name: formData.name,
       });
 
-      setFormData({ name: '' });
+      setFormData({ kode: '', name: '' });
       fetchProducts();
       setIsAddingProduct(false);
     } catch (err: any) {
@@ -60,7 +62,7 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
   // =============================
   const handleEditProduct = (product: Product) => {
     setEditingId(product.id);
-    setFormData({ name: product.name });
+    setFormData({ kode: product.kode, name: product.name });
   };
 
   const handleSaveEdit = async (id: number) => {
@@ -68,6 +70,7 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
 
     try {
       const res = await axios.put(`http://localhost:5000/products/${id}`, {
+        kode: formData.kode,
         name: formData.name,
       });
 
@@ -75,7 +78,7 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
 
       setProducts(updated);
       setEditingId(null);
-      setFormData({ name: '' });
+      setFormData({ kode: '', name: '' });
       fetchProducts();
     } catch (err: any) {
       alert(err.response?.data?.error || 'Gagal memperbarui produk');
@@ -101,7 +104,7 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
   const handleCancel = () => {
     setIsAddingProduct(false);
     setEditingId(null);
-    setFormData({ name: '' });
+    setFormData({ kode: '', name: '' });
   };
 
   return (
@@ -127,12 +130,24 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
           <h3 className="text-lg font-semibold text-gray-800">{isAddingProduct ? 'Tambah Produk Baru' : 'Edit Produk'}</h3>
 
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Kode Produk</label>
+            <input
+              type="text"
+              placeholder="Masukkan kode produk"
+              value={formData.kode}
+              onChange={(e) => setFormData((prev) => ({ ...prev, kode: e.target.value }))}
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
+              style={{ borderColor: '#e0e0e0' }}
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Nama Produk</label>
             <input
               type="text"
               placeholder="Masukkan nama produk"
               value={formData.name}
-              onChange={(e) => setFormData({ name: e.target.value })}
+              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2"
               style={{ borderColor: '#e0e0e0' }}
             />
@@ -163,14 +178,17 @@ export function ProductListTab({ products, setProducts }: ProductListTabProps) {
             <Card key={product.id} className="p-4 rounded-xl shadow-lg transition-all hover:shadow-xl" style={{ backgroundColor: 'rgba(250, 248, 245, 0.9)', borderColor: '#e8ddd4' }}>
               <div className="flex justify-between items-start mb-3">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3">
-                    <span className="text-sm font-bold text-white rounded-full px-3 py-1 bg-[#00275A]">
-                      {index + 1}
-                    </span>
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-sm font-bold text-white rounded-full px-3 py-1 bg-[#00275A]">{index + 1}</span>
                     <h3 className="text-xl font-bold text-gray-800">{product.name}</h3>
                   </div>
 
-                  <p className="text-xs text-gray-500 mt-2">Dibuat: {product.created_at ? new Date(product.created_at).toLocaleDateString('id-ID') : '-'}</p>
+                  <div className="flex items-center gap-2 ml-11">
+                    <span className="inline-flex items-center px-3 py-1 rounded-lg border border-[#F66802] text-sm font-semibold" style={{ backgroundColor: '#F66802', color: 'white' }}>
+                      Kode: {product.kode || 'N/A'}
+                    </span>
+                    <p className="text-xs text-gray-500">Dibuat: {product.created_at ? new Date(product.created_at).toLocaleDateString('id-ID') : '-'}</p>
+                  </div>
                 </div>
 
                 {/* ACTION BUTTONS */}

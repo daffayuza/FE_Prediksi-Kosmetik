@@ -321,7 +321,7 @@ export const TestingDataTab: React.FC<TestingDataTabProps> = ({ testData, setTes
                   {paginatedData.map((data, index) => {
                     const error = Math.abs(data.unitsSold - (data.predictedUnits || 0));
                     const errorPercent = data.unitsSold !== 0 ? (error / data.unitsSold) * 100 : 0;
-                    const accuracy = Math.max(0, 100 - errorPercent);
+                    const accuracy = 100 - errorPercent;
 
                     return (
                       <TableRow key={data.id}>

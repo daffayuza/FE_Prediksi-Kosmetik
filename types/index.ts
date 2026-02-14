@@ -11,6 +11,7 @@ export interface DataPoint {
 export interface Product {
   id: number
   name: string
+  kode: string
   created_at: string
 }
 
