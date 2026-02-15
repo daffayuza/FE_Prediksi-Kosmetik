@@ -120,7 +120,21 @@ export function usePredict(productId: number | null) {
     );
 
     return res.data.data; // { pengunjung, tayangan, pesanan }
-  }; 
+  };
+
+  const fetchForecastData = async () => {
+    if (!productId) {
+      throw new Error('Produk belum dipilih');
+    }
+
+    const res = await axios.post(
+      `http://localhost:5000/forecast-inputs/${productId}`,
+      {},
+      { withCredentials: true }
+    );
+
+    return res.data; // { forecasted_pengunjung, forecasted_tayangan, forecasted_pesanan, next_period }
+  };
 
   /* =======================
      AUTO FETCH SAAT PRODUK BERUBAH
@@ -136,6 +150,7 @@ export function usePredict(productId: number | null) {
     predict,
     refreshHistory: fetchHistory,
     deleteAllHistory,
-    fetchLastHistoricalData
+    fetchLastHistoricalData,
+    fetchForecastData
   };
 }

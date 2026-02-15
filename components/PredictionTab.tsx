@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Calculator, BarChart3, TrendingUp, RotateCcw } from 'lucide-react';
+import { Calculator, BarChart3, TrendingUp, RotateCcw, Sparkles } from 'lucide-react';
 import { RegressionModel, PredictionInput, Product } from '@/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { usePredict } from '@/hooks/usePredict';
@@ -33,7 +33,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
   const [showTrafficMultiplier, setShowTrafficMultiplier] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const { hasil, history, predict, deleteAllHistory, fetchLastHistoricalData } = usePredict(selectedProductId);
+  const { hasil, history, predict, deleteAllHistory, fetchLastHistoricalData, fetchForecastData } = usePredict(selectedProductId);
 
   const selectedProduct = products.find((p) => p.id === selectedProductId);
 
@@ -93,8 +93,33 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
         pageViews: data.tayangan.toString(),
         orders: data.pesanan.toString(),
       }));
+      setPredictionInput((prev) => ({
+        ...prev,
+        visitors: data.pengunjung.toString(),
+        pageViews: data.tayangan.toString(),
+        orders: data.pesanan.toString(),
+      }));
     } catch (err: any) {
       alert(err.message || 'Gagal mengambil data historis');
+    }
+  };
+
+  const handleAutoForecast = async () => {
+    try {
+      const data = await fetchForecastData();
+
+      setPredictionInput((prev) => ({
+        ...prev,
+        visitors: data.forecasted_pengunjung.toString(),
+        pageViews: data.forecasted_tayangan.toString(),
+        orders: data.forecasted_pesanan.toString(),
+        tahun: data.next_period.tahun.toString(),
+        bulan: data.next_period.bulan.toString(),
+      }));
+
+      alert(`Berhasil forecasting untuk bulan ${BULAN_LABEL[data.next_period.bulan]} ${data.next_period.tahun}`);
+    } catch (err: any) {
+      alert(err.response?.data?.error || err.message || 'Gagal melakukan forecasting');
     }
   };
 
@@ -116,11 +141,21 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
           <div className={`grid ${showTrafficMultiplier ? 'grid-cols-1 lg:grid-cols-2' : 'grid-cols-1'} gap-6`}>
             {/* Left Side - Input Variables */}
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                {/* <h3 className="text-lg font-semibold text-gray-900">Data Input</h3> */}
-                <Button variant="outline" size="sm" onClick={handleApplyLastHistorical}>
-                  Terapkan Data Latih Terakhir
-                </Button>
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Button variant="outline" size="sm" onClick={handleApplyLastHistorical}>
+                    Data Terakhir
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAutoForecast}
+                    className="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border-indigo-200"
+                  >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Isi Otomatis (Forecast)
+                  </Button>
+                </div>
 
                 <Button variant="outline" size="sm" onClick={() => setShowTrafficMultiplier(!showTrafficMultiplier)}>
                   <TrendingUp className="h-4 w-4 mr-2 " />
@@ -192,7 +227,7 @@ export const PredictionTab: React.FC<PredictionTabProps> = ({ products, selected
                       onClick={resetMultiplier}
                       variant="default"
                       className="w-full bg-[#FE7512] text-white hover:shadow-lg hover:bg-[#F66802] transition-all duration-200"
-                      // disabled={!originalInput.visitors}
+                    // disabled={!originalInput.visitors}
                     >
                       <RotateCcw className="h-4 w-4 mr-2" />
                       Reset Skenario
