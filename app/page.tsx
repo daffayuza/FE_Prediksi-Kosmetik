@@ -140,7 +140,7 @@ export default function SalesPredictionSystem() {
           <TabsContent value="prediction">
             <div className='space-y-6'>
               <ProductSelect products={products} selectedProductId={selectedProduct} onProductChange={setSelectedProduct} label='Prediksi Untuk Produk :' />
-              <PredictionTab products={products} selectedProductId={selectedProduct} model={model} />
+              <PredictionTab products={products} selectedProductId={selectedProduct} />
             </div>
           </TabsContent>
         </Tabs>
